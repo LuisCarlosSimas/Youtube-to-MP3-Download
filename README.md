@@ -1,6 +1,8 @@
 # Youtube-to-MP3-Download
 Baixe sua musica em mp3 direto do youtube.
 
+Para baixar apenas o programa executavel para windows, no lado direito da tela você encontrará a area de releases com o programa "youtube to mp3 download".
+
 -Descrição
 
 .Este é um programa simples e direto que permite a você baixar músicas do YouTube e convertê-las em arquivos MP3 para a sua área de trabalho.
