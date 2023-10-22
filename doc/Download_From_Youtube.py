@@ -7,47 +7,63 @@ from moviepy.editor import VideoFileClip
 import os
 
 def baixar():
-    link=url.get()
-    diretorio=os.getcwd()
-    diretorio=diretorio.replace("\\","/")
-    if link=="":
-        print("Insira um endereço URL do Youtube!")
-        return
+    #diretórios
+    try:
+        link=url.get()
+        diretorio=os.getcwd()
+        diretorio=diretorio.replace("\\","/")
+        download_path = diretorio
+        if link=="":
+            print("Insira um endereço URL do Youtube!")
+            return
+        
+    except Exception as e: 
+        print(f"Erro de diretório. Consulte o desenvolvedor do programa! ERROR= {str(e)}")
 
+    #download do vídeo
     try:
         video = YouTube(link)
         print("Baixando vídeo...")
         clip = video.streams.get_highest_resolution()
-        download_path = diretorio
         clip.download(output_path=download_path)
         print("Download concluido. Aguarde!")
 
     except Exception as e:
         messagebox.showerror("ERRO","Link de download incorreto, ou vídeo não disponivel para download!")
-        print(f"ERRO! {str(e)}")
+        print(f"Erro ao baixar o vídeo! ERROR= {str(e)}")
         return
 
-    arquivos_do_diretorio=os.listdir(diretorio)
-    arquivo_mais_recente=max(arquivos_do_diretorio, key=os.path.getctime)
-
-    #converção mp3
+    #converção para mp3
     try:
-        video_file = f'{diretorio}/{arquivo_mais_recente}'
-        mp3_output_path = f'{diretorio}/{arquivo_mais_recente}.mp3'
+        #diretório do vídeo
+        try:
+            arquivos_do_diretorio=os.listdir(diretorio)
+            arquivo_mais_recente=max(arquivos_do_diretorio, key=os.path.getctime)
+            video_file = f'{diretorio}/{arquivo_mais_recente}'
+            arquivo_mais_recente=arquivo_mais_recente.replace(".mp4","")
+            mp3_output_path = f'{diretorio}/{arquivo_mais_recente}.mp3'
+
+        except Exception as e:
+            print(f"Erro de diretório do vídeo. Consulte o desenvolvedor do programa! ERROR= {str(e)}")
+
         print("Convertendo vídeo para mp3...")
+
         video = VideoFileClip(video_file)
         audio = video.audio
         audio.write_audiofile(mp3_output_path)
         audio.close()
         video.close()
 
-        os.remove(f'{diretorio}/{arquivo_mais_recente}')
+        #excluir o vídeo
+        try:
+            os.remove(video_file)
+            url.delete(0, "end")
 
-        url.delete(0, "end")
+        except Exception as e:
+            print(f"Erro ao excluir o vídeo. ERROR= {str(e)}")
 
-        messagebox.showinfo("Sucesso","Novo mp3 baixado com sucesso!")
+        messagebox.showinfo("Sucesso","Novo mp3 criado com sucesso!")
         print("Arquivo mp3 criado com sucesso!")
-
         print("Fim da execução!")
 
     except Exception as e:
